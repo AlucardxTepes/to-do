@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,26 +17,28 @@ public class App {
 
     get("/", (req, res) -> {
       Map<String, Object> model = new HashMap<>();
-      model.put("tasks", req.session().attribute("tasks"));
       model.put("template", "templates/index.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    get("/tasks/new", (request, response) ->{
+      Map<String, Object> model = new HashMap<>();
+      model.put("template", "template/task-form.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    get("/tasks", (req, res) -> {
+      Map<String, Object> model = new HashMap<>();
+      model.put("tasks", Task.all());
+      model.put("template", "templates/tasks.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
     post("/tasks", (req, res) -> {
       Map<String, Object> model = new HashMap<>();
-
-      ArrayList<Task> tasks = req.session().attribute("tasks");
-      if (tasks == null) {
-        // create arraylist and save it to session
-        tasks = new ArrayList<Task>();
-        req.session().attribute("tasks", tasks);
-      }
-
       String description = req.queryParams("description");
       Task newTask = new Task(description);
-      tasks.add(newTask);
-
-      model.put("template", "templates/success.vtl");
+      model.put("temeplate", "templates/success.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
   }
