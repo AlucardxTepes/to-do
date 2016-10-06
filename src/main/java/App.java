@@ -23,7 +23,7 @@ public class App {
 
     get("/tasks/new", (request, response) ->{
       Map<String, Object> model = new HashMap<>();
-      model.put("template", "template/task-form.vtl");
+      model.put("template", "templates/task-form.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
@@ -38,7 +38,16 @@ public class App {
       Map<String, Object> model = new HashMap<>();
       String description = req.queryParams("description");
       Task newTask = new Task(description);
-      model.put("temeplate", "templates/success.vtl");
+      model.put("template", "templates/success.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    get("/tasks/:id", (req, res) ->{
+      Map<String, Object> model = new HashMap<>();
+      Task task = Task.find(Integer.parseInt(req.params(":id")));
+      model.put("task", task);
+
+      model.put("template", "templates/task.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
   }
