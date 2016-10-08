@@ -80,5 +80,23 @@ public class App {
       model.put("template", "templates/category.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
+
+    get("/categories/:id/tasks/new", (req, res) -> {
+      Map<String, Object> model = new HashMap<>();
+      Category category = Category.find(Integer.parseInt(req.params("id")));
+      model.put("category", category);
+      model.put("template", "templates/category-tasks-form.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    post("/categories/:id/tasks", (req, res) -> {
+      Map<String, Object> model = new HashMap<>();
+      Category category = Category.find(Integer.parseInt(req.queryParams("categoryId")));
+      String description = req.queryParams("description");
+      Task newTask = new Task(description);
+      model.put("category", category);
+      model.put("template", "templates/category-tasks-success.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
   }
 }
